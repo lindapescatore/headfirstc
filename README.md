@@ -1,0 +1,1 @@
+This is where I will keep files as I progress through Head First C. I recommend this book. It makes learning C fairly easy. I'm also still learning how to use Git. I've used it some before but I want to get more comfortable with it.
