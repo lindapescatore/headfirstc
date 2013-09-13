@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/*
+(c) Linda Pescatore 2013
+Based on the Advanced Functions chapter of Head First C, working with function pointers.
+The part that is "all me" is the last part, printing out boxes.
+The book only had us sort and print scores and strings, not the struct rectangles.
+It was a little challenging and I did seg-fault the first try! :P 
+After I printed the boxes in order of ascending area, it looked ragged because the widths were out of order.
+So I wrote another sort based on width and ran it after the first sort. It worked!
+*/
+
+	int compare_scores(const void* score_a, const void* score_b) {
+		int a = *(int*)score_a;
+		int b = *(int*)score_b;
+		return a-b;  // pos if a>b; neg if a<b; 0 if a==b
+	}
+
+	int compare_scores_desc(const void* score_a, const void* score_b) {
+		int a = *(int*)score_a;
+		int b = *(int*)score_b;
+		return b-a;  // pos if a<b; neg if a>b; 0 if a==b
+	}
+
+	typedef struct {
+		int width;
+		int height;
+	} rectangle;
+	
+	int compare_area(const void* a, const void* b) {
+		rectangle* ra = (rectangle*)a;
+		rectangle* rb = (rectangle*)b;
+		int area_a = ra->height * ra->width;
+		int area_b = rb->height * rb->width;
+		return area_a - area_b;
+	}	
+
+	int compare_width(const void* x, const void* y) {
+		rectangle* rx = (rectangle*)x;
+		rectangle* ry = (rectangle*)y;
+		int wx = rx->width;
+		int wy = ry->width;
+		return wx - wy;
+	}
+
+	int compare_names(const void* a, const void* b) {
+		char** sa = (char **)a;
+		char** sb = (char **)b;
+		return strcmp(*sa, *sb);
+	}	
+
+
+int main() {
+
+	int scores[] = {543, 323,32,554,11,3,112};
+	int i;
+	int sz_scores = sizeof(scores)/sizeof(int);
+	
+	qsort(scores, sz_scores, sizeof(int), &compare_scores);
+
+	puts("Scores (in ascending order): \n");
+	for (i = 0; i < sz_scores; i++)
+		printf("%i\n", scores[i]);
+
+	char *names[] = {"Joe", "Molly", "Kathryn", "Raymond"};
+	qsort(names, sizeof(names)/sizeof(char*), sizeof(char*), compare_names);
+	puts("\nNames (alphabetized):\n");
+	for (i = 0; i< 4; i++)
+		printf("%s\n", names[i]);
+
+	rectangle boxes[6] = {
+		{2,1}, // area = 2
+		{1,1}, // area = 1
+		{3,3}, // area = 9
+		{1,2}, // area = 2
+		{2,2}, // area = 4
+		{2,3}  // area = 6
+	};
+
+	int sz_boxes = sizeof(boxes)/sizeof(rectangle);
+	qsort(boxes, sz_boxes, sizeof(rectangle), compare_area);
+	qsort(boxes, sz_boxes, sizeof(rectangle), compare_width);
+
+	puts("\nBoxes (in ascending order of area): \n");
+	for (i = 0; i < sz_boxes; i++)
+		printf("%i X %i\n", boxes[i].width, boxes[i].height);
+
+
+	return 0;
+
+}
